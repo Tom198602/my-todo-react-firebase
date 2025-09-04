@@ -6,6 +6,17 @@ import { db } from '../firebase';
 import type { User } from 'firebase/auth';
 import type { Task } from '../types/task';
 
+function formatDateJP(ts?: number) {
+  if (typeof ts !== "number") return "-";
+  return new Date(ts).toLocaleString("ja-JP", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
 export default function TaskList( { currentUser }: { currentUser: User } ) {
    const [tasks, setTasks] = useState<Task[]>([]);
    const [loading, setLoading] = useState(true);
@@ -14,7 +25,7 @@ export default function TaskList( { currentUser }: { currentUser: User } ) {
    useEffect(() => {
       const q = query(
          collection(db, "users", currentUser.uid, "tasks"),
-         orderBy("createdAt", "desc")
+         orderBy("createdAt", "asc")
       );
       const unsub = onSnapshot(
          q, 
@@ -63,13 +74,21 @@ export default function TaskList( { currentUser }: { currentUser: User } ) {
                      onChange={() => toggle(t.id, t.done)}
                      className='h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500'
                   />
-                  <span
-                     className={
-                        "text-sm text-gray-800 " + (t.done ? "line-through text-gray-400" : "")
-                     }
-                  >
-                     {t.title}
-                  </span>
+                  
+                  <div className='flex-1'>
+                     <span
+                        className={
+                           "text-sm text-gray-800 " + (t.done ? "line-through text-gray-400" : "")
+                        }
+                     >
+                        {t.title}
+                     </span>
+
+                     <div className='mt-1 text-xs text-gray-500'>
+                        作成 {formatDateJP(t.createdAt)}
+                     </div>
+                  </div>
+            
                </label>
 
                <button 

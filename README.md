@@ -14,6 +14,11 @@ Firebase Authでログインし、ユーザーごとにFirestoreへタスクを�
 - Firebase Auth / Firestore
 - React Router
 
+## 使用ライブラリ / ツール
+- Tailwind CSS（スタイリング）
+- ESLint / Prettier（コード整形・静的解析）
+- Git / GitHub（バージョン管理）
+
 ## セットアップ
 ```bash
 npm i
@@ -21,9 +26,11 @@ cp .env.local.example .env.local  # 環境変数を設定
 npm run dev
 
 ## 学び・工夫
-- onSnapshotを使いリアルタイム更新を実装
-- useEffect cleanupで購読解除しメモリリークを防止
-- Firestoreルールを設定し、自分のuid以外のデータにアクセスできないよう制御
+- onSnapshot を使いリアルタイム更新を実装
+- useEffect cleanup で購読解除しメモリリークを防止
+- Firestore セキュリティルールで uid によるデータ分離を実現
+- ESLint/Prettier を導入し、チーム開発を意識したコード品質維持
+- Firebase Hosting を使って CI/CD を体験
 
 ## 必要な環境変数(.env.local)
 VITE_FIREBASE_API_KEY=（FirebaseプロジェクトのAPIキー）
@@ -36,7 +43,6 @@ VITE_FIREBASE_APP_ID=（FirebaseアプリID）
 ## 画面
 ![サインページ](./docs/signin-page.png)
 ![タスク管理ページ](./docs/task-page.png)
-
 
 ## 使い方
 1. Google アカウントでログイン
@@ -52,8 +58,10 @@ src/
   firebase.ts   # Firebase 初期化
 
 ## デプロイ
-[アプリを開く](https://react-ts-firebase-todo-d5d7f.web.app)
+https://react-ts-firebase-todo-d5d7f.web.app
 
+## リポジトリ
+https://github.com/Tom198602/my-todo-react-firebase
 
 
 
