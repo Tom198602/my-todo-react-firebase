@@ -8,6 +8,8 @@ Firebase Authでログインし、ユーザーごとにFirestoreへタスクを�
 - タスク追加/更新/削除 (Firestore)
 - ユーザーごとのデータ分離 (`users/{uid}/tasks`)
 - リアルタイム更新 (onSnapshot)
+- 作成日時の表示（日本語形式）
+- 作成順にタスクを並び替え
 
 ## 技術
 - React 18 / TypeScript / Vite
@@ -31,6 +33,8 @@ npm run dev
 - Firestore セキュリティルールで uid によるデータ分離を実現
 - ESLint/Prettier を導入し、チーム開発を意識したコード品質維持
 - Firebase Hosting を使って CI/CD を体験
+- Date.now() を利用して作成日時を保存し、toLocaleString("ja-JP") で日本語表示を実装
+- orderBy("createdAt", "asc") を利用して作成順にタスクを並び替え
 
 ## 必要な環境変数(.env.local)
 VITE_FIREBASE_API_KEY=（FirebaseプロジェクトのAPIキー）
