@@ -1,73 +1,100 @@
-# React + TypeScript + Vite + Firebase Todo
+# TaskFlow - React + TypeScript + Firebase Todo
 
-## 概要
-Firebase Authでログインし、ユーザーごとにFirestoreへタスクを管理。CRUD機能を実装。onSnapshotによるリアルタイム対応。
+Firebase Auth と Cloud Firestore を使ったリアルタイム Todo アプリです。Google ログイン後、ユーザーごとに分離されたタスクを追加、編集、完了、削除できます。
 
-## 主要機能
-- Google認証 (Firebase Auth)
-- タスク追加/更新/削除 (Firestore)
-- ユーザーごとのデータ分離 (`users/{uid}/tasks`)
-- リアルタイム更新 (onSnapshot)
-- 作成日時の表示（日本語形式）
-- 作成順にタスクを並び替え
+[Live Demo](https://react-ts-firebase-todo-d5d7f.web.app)
 
-## 技術
-- React 18 / TypeScript / Vite
-- Firebase Auth / Firestore
+## Portfolio Highlights
+
+- React 19 + TypeScript + Vite によるコンポーネント設計
+- Firebase Auth の Google ログイン
+- `users/{uid}/tasks` によるユーザー単位の Firestore データ分離
+- `onSnapshot` を使ったリアルタイム同期
+- タスクの追加、インライン編集、完了切り替え、削除、一括削除
+- 未完了/完了フィルター、件数、完了率の表示
+- ローディング、空状態、エラー、送信中などの UI 状態
+- Firestore Security Rules による認証済みユーザーのアクセス制限
+- レスポンシブな Tailwind CSS UI
+
+## Tech Stack
+
+- React 19
+- TypeScript
+- Vite
 - React Router
+- Firebase Auth
+- Cloud Firestore
+- Tailwind CSS
+- ESLint
 
-## 使用ライブラリ / ツール
-- Tailwind CSS（スタイリング）
-- ESLint / Prettier（コード整形・静的解析）
-- Git / GitHub（バージョン管理）
+## Getting Started
 
-## セットアップ
 ```bash
-npm i
-cp .env.local.example .env.local  # 環境変数を設定
+npm install
+cp .env.local.example .env.local
 npm run dev
+```
 
-## 学び・工夫
-- onSnapshot を使いリアルタイム更新を実装
-- useEffect cleanup で購読解除しメモリリークを防止
-- Firestore セキュリティルールで uid によるデータ分離を実現
-- ESLint/Prettier を導入し、チーム開発を意識したコード品質維持
-- Firebase Hosting を使って CI/CD を体験
-- Date.now() を利用して作成日時を保存し、toLocaleString("ja-JP") で日本語表示を実装
-- orderBy("createdAt", "asc") を利用して作成順にタスクを並び替え
+`.env.local` に Firebase プロジェクトの値を設定してください。
 
-## 必要な環境変数(.env.local)
-VITE_FIREBASE_API_KEY=（FirebaseプロジェクトのAPIキー）
-VITE_FIREBASE_AUTH_DOMAIN=（例: your-app.firebaseapp.com）
-VITE_FIREBASE_PROJECT_ID=（FirebaseプロジェクトID）
-VITE_FIREBASE_STORAGE_BUCKET=（例: your-app.appspot.com）
-VITE_FIREBASE_MESSAGING_SENDER_ID=（数値ID）
-VITE_FIREBASE_APP_ID=（FirebaseアプリID）
+```bash
+VITE_FIREBASE_API_KEY=your-api-key
+VITE_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=your-project-id
+VITE_FIREBASE_STORAGE_BUCKET=your-project.appspot.com
+VITE_FIREBASE_MESSAGING_SENDER_ID=1234567890
+VITE_FIREBASE_APP_ID=1:1234567890:web:abcdef123456
+```
 
-## 画面
-![サインページ](./docs/signin-page.png)
-![タスク管理ページ](./docs/task-page.png)
+## Available Scripts
 
-## 使い方
-1. Google アカウントでログイン
-2. タスクを入力して追加
-3. チェックボックスで完了状態を切り替え
-4. 不要なタスクは削除
+```bash
+npm run dev
+npm run lint
+npm run build
+npm run preview
+```
 
-## プロジェクト構成
+## Firestore Structure
+
+```text
+users/{uid}/tasks/{taskId}
+  title: string
+  done: boolean
+  createdAt: number
+  updatedAt: number
+```
+
+## Security Rules
+
+`firestore.rules` では、ログインユーザーが自分の `users/{uid}/tasks` だけを読み書きできるように制限しています。タスクの文字数、boolean 型、日時フィールドも検証します。
+
+## Screenshots
+
+![Sign-in page](./docs/signin-page.png)
+![Task page](./docs/task-page.png)
+
+## Project Structure
+
+```text
 src/
-  components/   # UI コンポーネント
-  pages/        # 画面単位
-  types/        # 型定義
-  firebase.ts   # Firebase 初期化
+  components/   UI components such as TaskForm, TaskList, TaskItem
+  hooks/        Firebase task logic separated from UI
+  pages/        Route-level screens
+  types/        Shared TypeScript types
+  firebase.ts   Firebase initialization and env validation
+firestore.rules Firestore access rules
+```
 
-## デプロイ
-https://react-ts-firebase-todo-d5d7f.web.app
+## Code Walkthrough
 
-## リポジトリ
-https://github.com/Tom198602/my-todo-react-firebase
+- `src/firebase.ts`: Firebase の初期化と環境変数チェック
+- `src/App.tsx`: ログイン状態によるルーティング
+- `src/hooks/useTasks.ts`: Firestore の購読、更新、削除をまとめたカスタム Hook
+- `src/components/TaskForm.tsx`: 新しいタスクの追加フォーム
+- `src/components/TaskList.tsx`: フィルター、件数、完了率、一覧の表示
+- `src/components/TaskItem.tsx`: 1件分のタスク表示とインライン編集
 
+## What I Focused On
 
-
-
-
+このアプリは小さな Todo アプリですが、採用担当者が見やすいように「実務で必要な状態管理」を入れています。Firebase との通信は `useTasks` にまとめ、画面表示は小さなコンポーネントに分けることで、処理の流れを説明しやすい構成にしています。
