@@ -66,6 +66,12 @@ export default function SignIn() {
               </h2>
             </div>
             <SignInButton />
+            <a
+              href="/portfolio"
+              className="mt-4 inline-flex text-sm font-medium text-zinc-500 transition hover:text-zinc-950 focus:outline-none focus:ring-2 focus:ring-zinc-950 focus:ring-offset-2"
+            >
+              作品紹介を見る
+            </a>
           </div>
         </section>
       </main>

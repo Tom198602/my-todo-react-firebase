@@ -5,6 +5,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { auth, firebaseConfigError, missingFirebaseEnv } from "./firebase";
 import SignIn from "./pages/SignIn";
 import AppHome from "./pages/AppHome";
+import Portfolio from "./pages/Portfolio";
 
 function AppLoading() {
   return (
@@ -63,19 +64,31 @@ function App() {
     });
   }, []);
 
-  if (!auth) return <FirebaseSetupError />;
-  if (checking) return <AppLoading />;
-
   return (
     <Routes>
+      <Route path="/portfolio" element={<Portfolio />} />
       <Route
         path="/signin"
-        element={currentUser ? <Navigate to="/app" replace /> : <SignIn />}
+        element={
+          !auth ? (
+            <FirebaseSetupError />
+          ) : checking ? (
+            <AppLoading />
+          ) : currentUser ? (
+            <Navigate to="/app" replace />
+          ) : (
+            <SignIn />
+          )
+        }
       />
       <Route
         path="/app"
         element={
-          currentUser ? (
+          !auth ? (
+            <FirebaseSetupError />
+          ) : checking ? (
+            <AppLoading />
+          ) : currentUser ? (
             <AppHome currentUser={currentUser} />
           ) : (
             <Navigate to="/signin" replace />

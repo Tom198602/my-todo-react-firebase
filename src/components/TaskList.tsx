@@ -2,6 +2,7 @@ import { type FormEvent, useMemo, useState } from "react";
 import type { User } from "firebase/auth";
 import TaskItem from "./TaskItem";
 import { useTasks } from "../hooks/useTasks";
+import { filterTasks, getTaskStats } from "../lib/taskUtils";
 import type { Task, TaskFilter } from "../types/task";
 
 const FILTERS: Array<{ value: TaskFilter; label: string }> = [
@@ -9,21 +10,6 @@ const FILTERS: Array<{ value: TaskFilter; label: string }> = [
   { value: "active", label: "未完了" },
   { value: "completed", label: "完了" },
 ];
-
-function getStats(tasks: Task[]) {
-  const completedCount = tasks.filter((task) => task.done).length;
-  const activeCount = tasks.length - completedCount;
-  const completionRate =
-    tasks.length === 0 ? 0 : Math.round((completedCount / tasks.length) * 100);
-
-  return { activeCount, completedCount, completionRate };
-}
-
-function filterTasks(tasks: Task[], filter: TaskFilter) {
-  if (filter === "active") return tasks.filter((task) => !task.done);
-  if (filter === "completed") return tasks.filter((task) => task.done);
-  return tasks;
-}
 
 function EmptyState({ filter }: { filter: TaskFilter }) {
   const message =
@@ -99,7 +85,7 @@ export default function TaskList({ currentUser }: { currentUser: User }) {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [draftTitle, setDraftTitle] = useState("");
 
-  const stats = getStats(tasks);
+  const stats = getTaskStats(tasks);
   const visibleTasks = useMemo(
     () => filterTasks(tasks, filter),
     [filter, tasks],
